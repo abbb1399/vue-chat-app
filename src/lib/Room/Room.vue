@@ -3,12 +3,14 @@
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 		class="vac-col-messages"
 	>
+		<!-- 방이 선택되지 않음 -->
 		<slot v-if="showNoRoom" name="no-room-selected">
 			<div class="vac-container-center vac-room-empty">
 				<div>{{ textMessages.ROOM_EMPTY }}</div>
 			</div>
 		</slot>
 
+		<!-- 방이 선택됨 -->
 		<room-header
 			v-else
 			:current-user-id="currentUserId"
@@ -66,6 +68,7 @@
 					</transition>
 					<transition-group :key="roomId" name="vac-fade-message">
 						<div v-for="(m, i) in messages" :key="m._id">
+							<!-- 메세지 -->
 							<message
 								:current-user-id="currentUserId"
 								:message="m"
@@ -99,6 +102,7 @@
 				</div>
 			</div>
 		</div>
+		<!-- 메세지 몇개 왓나 카운트하는거? -->
 		<div v-if="!loadingMessages">
 			<transition name="vac-bounce">
 				<div v-if="scrollIcon" class="vac-icon-scroll" @click="scrollToBottom">
@@ -116,11 +120,13 @@
 				</div>
 			</transition>
 		</div>
+
 		<div
 			v-show="Object.keys(room).length && showFooter"
 			ref="roomFooter"
 			class="vac-room-footer"
-		>
+		>	
+			<!-- 답신 -->
 			<room-message-reply
 				:room="room"
 				:message-reply="messageReply"
@@ -153,6 +159,7 @@
 					v-if="showAudio && !imageFile && !videoFile"
 					class="vac-icon-textarea-left"
 				>
+					<!-- 마이크 버튼 -->
 					<template v-if="isRecording">
 						<div
 							class="vac-svg-button vac-icon-audio-stop"
@@ -186,6 +193,7 @@
 					</div>
 				</div>
 
+				<!-- 이미지 -->
 				<div v-if="imageFile" class="vac-media-container">
 					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
 						<slot name="image-close-icon">
@@ -197,6 +205,7 @@
 					</div>
 				</div>
 
+				<!-- 동영상 -->
 				<div v-else-if="videoFile" class="vac-media-container">
 					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
 						<slot name="image-close-icon">
@@ -210,6 +219,7 @@
 					</div>
 				</div>
 
+				<!-- 파일 -->
 				<div
 					v-else-if="file"
 					class="vac-file-container"

@@ -94,20 +94,25 @@ export default {
 		Room
 	},
 
+	// 넘겨준거 체크하기
 	props: {
+		// 넘겨줌
 		height: { type: String, default: '600px' },
-		theme: { type: String, default: 'light' },
+		theme: { type: String, default: 'dark' },	//dark or light
 		styles: { type: Object, default: () => ({}) },
 		responsiveBreakpoint: { type: Number, default: 900 },
 		singleRoom: { type: Boolean, default: false },
 		textMessages: { type: Object, default: null },
+		// 넘겨줌
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
 		loadingRooms: { type: Boolean, default: false },
 		roomsLoaded: { type: Boolean, default: false },
 		roomId: { type: [String, Number], default: null },
 		loadFirstRoom: { type: Boolean, default: true },
+		// 넘겨줌
 		messages: { type: Array, default: () => [] },
+		
 		messagesLoaded: { type: Boolean, default: false },
 		roomActions: { type: Array, default: () => [] },
 		menuActions: { type: Array, default: () => [] },

@@ -3,6 +3,7 @@
 		class="vac-format-message-wrapper"
 		:class="{ 'vac-text-ellipsis': singleLine }"
 	>
+		<!-- textFormatting default가 true인듯 -->
 		<div v-if="textFormatting" :class="{ 'vac-text-ellipsis': singleLine }">
 			<template v-for="(message, i) in linkifiedMessage">
 				<component
@@ -22,9 +23,11 @@
 					:target="message.href ? linkOptions.target : null"
 					@click="openTag(message)"
 				>
+					<!-- 삭제아이콘 -->
 					<slot name="deleted-icon" v-bind="{ deleted }">
 						<svg-icon v-if="deleted" name="deleted" class="vac-icon-deleted" />
 					</slot>
+					<!-- url과 이미지둘다 있을경우. 하지만 적다 -->
 					<template v-if="message.url && message.image">
 						<div class="vac-image-link-container">
 							<div
@@ -39,6 +42,7 @@
 							<span>{{ message.value }}</span>
 						</div>
 					</template>
+					<!-- 메세지 나오는곳 -->
 					<template v-else>
 						<span>{{ message.value }}</span>
 					</template>

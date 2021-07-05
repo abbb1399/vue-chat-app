@@ -1,13 +1,16 @@
 <template>
 	<div :id="message._id" :ref="message._id" class="vac-message-wrapper">
+		<!-- 채팅입력시 오늘날짜 나오는데 -->
 		<div v-if="showDate" class="vac-card-info vac-card-date">
 			{{ message.date }}
 		</div>
 
+		<!-- 새로운 메세지 -->
 		<div v-if="newMessage._id === message._id" class="vac-line-new">
 			{{ textMessages.NEW_MESSAGES }}
 		</div>
-
+		
+		<!-- 따로 설정할때 나오는 메세지 인듯 -->
 		<div v-if="message.system" class="vac-card-info vac-card-system">
 			<format-message
 				:content="message.content"
@@ -21,18 +24,21 @@
 				</template>
 			</format-message>
 		</div>
-
+		
+		<!-- 따로 설정해준게 아닐때 -->
 		<div
 			v-else
 			class="vac-message-box"
 			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
 		>
 			<slot name="message" v-bind="{ message }">
+				<!-- 아바타? -->
 				<div
 					v-if="message.avatar && message.senderId !== currentUserId"
 					class="vac-avatar"
 					:style="{ 'background-image': `url('${message.avatar}')` }"
 				/>
+				<!-- 메세지 컨테이너 -->
 				<div
 					class="vac-message-container"
 					:class="{
@@ -48,7 +54,8 @@
 						}"
 						@mouseover="onHoverMessage"
 						@mouseleave="onLeaveMessage"
-					>
+					>	
+						<!-- 유저이름 -->
 						<div
 							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
 							class="vac-text-username"
@@ -59,6 +66,7 @@
 							<span>{{ message.username }}</span>
 						</div>
 
+						<!-- 답장 -->
 						<message-reply
 							v-if="!message.deleted && message.replyMessage"
 							:message="message"
@@ -70,7 +78,8 @@
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-reply>
-
+						
+						<!-- 삭제일경우 -->
 						<div v-if="message.deleted">
 							<slot name="deleted-icon">
 								<svg-icon name="deleted" class="vac-icon-deleted" />
@@ -78,6 +87,7 @@
 							<span>{{ textMessages.MESSAGE_DELETED }}</span>
 						</div>
 
+						<!-- 메세지 파일관련 다운로드 버튼 (지금은 여긴데) -->
 						<format-message
 							v-else-if="!message.file"
 							:content="message.content"
@@ -91,6 +101,7 @@
 							</template>
 						</format-message>
 
+						<!-- 이미지일때 -->
 						<message-image
 							v-else-if="isImage"
 							:current-user-id="currentUserId"
@@ -106,6 +117,7 @@
 							</template>
 						</message-image>
 
+						<!-- 비디오 메세지일때 -->
 						<div v-else-if="isVideo" class="vac-video-container">
 							<video width="100%" height="100%" controls>
 								<source :src="message.file.url" />
@@ -123,6 +135,7 @@
 							</format-message>
 						</div>
 
+						<!-- 오디오일때 -->
 						<audio-player
 							v-else-if="isAudio"
 							:src="message.file.url"
@@ -134,6 +147,7 @@
 							</template>
 						</audio-player>
 
+						<!-- 여긴데 -->
 						<div v-else class="vac-file-message">
 							<div
 								class="vac-svg-button vac-icon-file"
@@ -150,6 +164,7 @@
 							{{ progressTime }}
 						</div>
 
+						<!-- 타임스탬프 -->
 						<div class="vac-text-timestamp">
 							<div
 								v-if="message.edited && !message.deleted"
@@ -159,6 +174,7 @@
 									<svg-icon name="pencil" />
 								</slot>
 							</div>
+			
 							<span>{{ message.timestamp }}</span>
 							<span v-if="isCheckmarkVisible">
 								<slot name="checkmark-icon" v-bind="{ message }">

@@ -3,7 +3,7 @@
 		<div class="vac-reply-username">
 			{{ replyUsername }}
 		</div>
-
+		<!-- 이미지 -->
 		<div v-if="isImage" class="vac-image-reply-container">
 			<div
 				class="vac-message-image vac-message-image-reply"
@@ -13,12 +13,14 @@
 			/>
 		</div>
 
+		<!-- 비디오 -->
 		<div v-else-if="isVideo" class="vac-video-reply-container">
 			<video width="100%" height="100%" controls>
 				<source :src="message.replyMessage.file.url" />
 			</video>
 		</div>
 
+		<!-- 오디오 -->
 		<audio-player
 			v-else-if="isAudio"
 			:src="message.replyMessage.file.url"

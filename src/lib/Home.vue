@@ -36,7 +36,7 @@ export default {
 					users: [
 						{ _id: 1234, username: 'John Doe' },
 						{ _id: 4321, username: 'John Snow' },
-						// { _id: 5678, username: 'Paul Jeon' }
+						{ _id: 5678, username: 'Paul Jeon' }
 					]
 				}
 			],
@@ -46,7 +46,7 @@ export default {
 	},
   methods: {
 		fetchMessages({ options = {} }) {
-			console.log(options)
+			// console.log(options)
 			
 			setTimeout(() => {
 				// 방이 처음 열렸을때 reset:true
@@ -61,10 +61,10 @@ export default {
 		},
 
 		addMessages(reset) {
-			console.log(reset)
+			// console.log(reset)
 			const messages = []
 
-			for (let i = 0; i < 5; i++) {
+			for (let i = 0; i < 2; i++) {
 				messages.push({
 					_id: reset ? i : this.messages.length + i,
 					content: `${reset ? '' : 'paginated'} message ${i + 1}`,
