@@ -246,7 +246,7 @@
 				<textarea
 					v-show="!file || imageFile || videoFile"
 					ref="roomTextarea"
-					v-model="message"
+					v-model.lazy="message"
 					:placeholder="textMessages.TYPE_MESSAGE"
 					class="vac-textarea"
 					:class="{
@@ -261,6 +261,7 @@
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
 					@keydown.enter.exact.prevent=""
+          @keydown.enter="test"
 				/>
 
 				<div class="vac-icon-textarea">
@@ -318,11 +319,11 @@
 					<div
 						v-if="showSendIcon"
 						class="vac-svg-button"
-						:class="{ 'vac-send-disabled': isMessageEmpty }"
+						
 						@click="sendMessage"
 					>
 						<slot name="send-icon">
-							<svg-icon name="send" :param="isMessageEmpty ? 'disabled' : ''" />
+							<svg-icon name="send" :param="isMessageEmpty ? '' : ''" />
 						</slot>
 					</div>
 				</div>
@@ -522,19 +523,19 @@ export default {
 		this.newMessages = []
 		const isMobile = detectMobile()
 
-		window.addEventListener('keyup', e => {
-			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
-				if (isMobile) {
-					this.message = this.message + '\n'
-					setTimeout(() => this.onChangeInput())
-				} else {
-					this.sendMessage()
-				}
-			}
+		// window.addEventListener('keyup', (e) => {  
+    //   if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+		// 		if (isMobile) {
+		// 			this.message = this.message + '\n'
+		// 			setTimeout(() => this.onChangeInput())
+		// 		} else {
+		// 			this.sendMessage()
+		// 		}
+		// 	}
 
-			this.updateFooterList('@')
-			this.updateFooterList(':')
-		})
+		// 	this.updateFooterList('@')
+		// 	this.updateFooterList(':')
+		// })
 
 		this.$refs['roomTextarea'].addEventListener('click', () => {
 			if (isMobile) this.keepKeyboardOpen = true
@@ -553,6 +554,21 @@ export default {
 	},
 
 	methods: {
+    test(e){
+        const isMobile = detectMobile()
+        if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+          if (isMobile) {
+            this.message = this.message + '\n'
+            setTimeout(() => this.onChangeInput())
+          } else {
+            console.log('entered')
+            this.sendMessage()
+          }
+        }
+
+        this.updateFooterList('@')
+        this.updateFooterList(':')
+    },
 		onRoomChanged() {
 			this.loadingMessages = true
 			this.scrollIcon = false
@@ -808,7 +824,9 @@ export default {
 			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
 		},
 		sendMessage() {
+      console.log('send')
 			let message = this.message.trim()
+      console.log(message)
 
 			if (!this.file && !message) return
 
@@ -830,6 +848,7 @@ export default {
 					})
 				}
 			} else {
+        // 여기가 메세지
 				this.$emit('send-message', {
 					content: message,
 					file: this.file,
@@ -909,9 +928,10 @@ export default {
 			}, 50)
 		},
 		onChangeInput() {
-			this.keepKeyboardOpen = true
-			this.resizeTextarea()
-			this.$emit('typing-message', this.message)
+      // console.log('here')
+			// this.keepKeyboardOpen = true
+			// this.resizeTextarea()
+			// this.$emit('typing-message', this.message)
 		},
 		resizeTextarea() {
 			const el = this.$refs['roomTextarea']
