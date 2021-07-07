@@ -1,16 +1,17 @@
 <template>
 	<div
-		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 		class="vac-col-messages"
 	>
-		<!-- 방이 선택되지 않음 -->
+		<!-- 방이 선택되지 않음 v-if -->
 		<slot v-if="showNoRoom" name="no-room-selected">
 			<div class="vac-container-center vac-room-empty">
 				<div>{{ textMessages.ROOM_EMPTY }}</div>
 			</div>
 		</slot>
 
-		<!-- 방이 선택됨 -->
+		<!-- 방이 선택됨 v-else -->
+		
+		<!-- 방 header 컴포넌트 임포트함-->
 		<room-header
 			v-else
 			:current-user-id="currentUserId"
@@ -30,24 +31,30 @@
 			</template>
 		</room-header>
 
+		<!-- 몸통 -->
 		<div
 			ref="scrollContainer"
 			class="vac-container-scroll"
-			@scroll="onContainerScroll"
+			@scroll="onContainerScroll"	
 		>
+			<!-- 로딩 -->
 			<loader :show="loadingMessages" />
 			<div class="vac-messages-container">
 				<div :class="{ 'vac-messages-hidden': loadingMessages }">
 					<transition name="vac-fade-message">
+						<!-- 메세지 없음 -->
 						<div v-if="showNoMessages" class="vac-text-started">
 							<slot name="messages-empty">
 								{{ textMessages.MESSAGES_EMPTY }}
 							</slot>
 						</div>
+						<!-- 대화 시작일 -->
 						<div v-if="showMessagesStarted" class="vac-text-started">
 							{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
 						</div>
 					</transition>
+					
+					<!-- 무한로딩 -->
 					<transition name="vac-fade-message">
 						<infinite-loading
 							v-if="messages.length"
@@ -66,9 +73,10 @@
 							<div slot="no-more" />
 						</infinite-loading>
 					</transition>
+
+					<!-- 메세지 -->
 					<transition-group :key="roomId" name="vac-fade-message">
 						<div v-for="(m, i) in messages" :key="m._id">
-							<!-- 메세지 -->
 							<message
 								:current-user-id="currentUserId"
 								:message="m"
@@ -121,13 +129,13 @@
 			</transition>
 		</div>
 
+		<!-- //////////////////////////////   footer 시작   /////////////////////////////////////// -->
 		<div
-			v-show="Object.keys(room).length && showFooter"
 			ref="roomFooter"
 			class="vac-room-footer"
 		>	
-			<!-- 답신 -->
-			<room-message-reply
+			<!-- Footer 답신 -->
+			<!-- <room-message-reply
 				:room="room"
 				:message-reply="messageReply"
 				:text-formatting="textFormatting"
@@ -137,17 +145,7 @@
 				<template v-for="(i, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
-			</room-message-reply>
-
-			<room-emojis
-				:filtered-emojis="filteredEmojis"
-				@select-emoji="selectEmoji($event)"
-			/>
-
-			<room-users-tag
-				:filtered-users-tag="filteredUsersTag"
-				@select-user-tag="selectUserTag($event)"
-			/>
+			</room-message-reply> -->
 
 			<div
 				class="vac-box-footer"
@@ -155,45 +153,7 @@
 					'vac-app-box-shadow': filteredEmojis.length || filteredUsersTag.length
 				}"
 			>
-				<div
-					v-if="showAudio && !imageFile && !videoFile"
-					class="vac-icon-textarea-left"
-				>
-					<!-- 마이크 버튼 -->
-					<template v-if="isRecording">
-						<div
-							class="vac-svg-button vac-icon-audio-stop"
-							@click="stopRecorder"
-						>
-							<slot name="audio-stop-icon">
-								<svg-icon name="close-outline" />
-							</slot>
-						</div>
-
-						<div class="vac-dot-audio-record" />
-
-						<div class="vac-dot-audio-record-time">
-							{{ recordedTime }}
-						</div>
-
-						<div
-							class="vac-svg-button vac-icon-audio-confirm"
-							@click="toggleRecorder(false)"
-						>
-							<slot name="audio-stop-icon">
-								<svg-icon name="checkmark" />
-							</slot>
-						</div>
-					</template>
-
-					<div v-else class="vac-svg-button" @click="toggleRecorder(true)">
-						<slot name="microphone-icon">
-							<svg-icon name="microphone" class="vac-icon-microphone" />
-						</slot>
-					</div>
-				</div>
-
-				<!-- 이미지 -->
+				<!-- 이미지 첨부할때 -->
 				<div v-if="imageFile" class="vac-media-container">
 					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
 						<slot name="image-close-icon">
@@ -205,7 +165,7 @@
 					</div>
 				</div>
 
-				<!-- 동영상 -->
+				<!-- 동영상 첨부할때 -->
 				<div v-else-if="videoFile" class="vac-media-container">
 					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
 						<slot name="image-close-icon">
@@ -219,7 +179,7 @@
 					</div>
 				</div>
 
-				<!-- 파일 -->
+				<!-- 파일첨부할때 -->
 				<div
 					v-else-if="file"
 					class="vac-file-container"
@@ -243,6 +203,7 @@
 					</div>
 				</div>
 
+				<!-- input(textarea) 창 -->
 				<textarea
 					v-show="!file || imageFile || videoFile"
 					ref="roomTextarea"
@@ -264,6 +225,7 @@
           @keydown.enter="test"
 				/>
 
+				<!-- footer 버튼들 -->
 				<div class="vac-icon-textarea">
 					<div
 						v-if="editedMessage._id"
@@ -319,15 +281,16 @@
 					<div
 						v-if="showSendIcon"
 						class="vac-svg-button"
-						
 						@click="sendMessage"
+						:disabled="isEmpty < 1"
 					>
 						<slot name="send-icon">
-							<svg-icon name="send" :param="isMessageEmpty ? '' : ''" />
+							<svg-icon name="send"/>
 						</slot>
 					</div>
 				</div>
 			</div>
+
 		</div>
 	</div>
 </template>
@@ -342,9 +305,9 @@ import SvgIcon from '../../components/SvgIcon/SvgIcon'
 import EmojiPicker from '../../components/EmojiPicker/EmojiPicker'
 
 import RoomHeader from './RoomHeader/RoomHeader'
-import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
-import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
-import RoomEmojis from './RoomEmojis/RoomEmojis'
+// import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
+// import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
+// import RoomEmojis from './RoomEmojis/RoomEmojis'
 import Message from '../Message/Message'
 
 import filteredUsers from '../../utils/filter-items'
@@ -360,9 +323,9 @@ export default {
 		SvgIcon,
 		EmojiPicker,
 		RoomHeader,
-		RoomMessageReply,
-		RoomUsersTag,
-		RoomEmojis,
+		// RoomMessageReply,
+		// RoomUsersTag,
+		// RoomEmojis,
 		Message
 	},
 
@@ -425,7 +388,9 @@ export default {
 			cursorRangePosition: null,
 			recorder: this.initRecorder(),
 			isRecording: false,
-			format: 'mp3'
+			format: 'mp3',
+			emptyChecker: '',
+			isEmpty: true
 		}
 	},
 
@@ -459,7 +424,7 @@ export default {
 			return this.messages.length && this.messagesLoaded
 		},
 		isMessageEmpty() {
-			return !this.file && !this.message.trim()
+			return !this.file
 		},
 		recordedTime() {
 			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
@@ -467,6 +432,14 @@ export default {
 	},
 
 	watch: {
+		emptyChecker(val){
+			if(!val){
+				console.log('here')
+				this.isEmpty = 2
+			}else{
+				this.isEmpty = 0
+			}
+		},
 		loadingMessages(val) {
 			if (val) {
 				this.infiniteState = null
@@ -522,6 +495,7 @@ export default {
 	mounted() {
 		this.newMessages = []
 		const isMobile = detectMobile()
+		console.log(this.$refs.roomTextarea.value)
 
 		// window.addEventListener('keyup', (e) => {  
     //   if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
@@ -555,19 +529,21 @@ export default {
 
 	methods: {
     test(e){
-        const isMobile = detectMobile()
-        if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
-          if (isMobile) {
-            this.message = this.message + '\n'
-            setTimeout(() => this.onChangeInput())
-          } else {
-            console.log('entered')
-            this.sendMessage()
-          }
-        }
+			// console.log(this.$refs.roomTextarea.value)
+			// const isMobile = detectMobile()
+			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+				this.sendMessage(e)
+				// if (isMobile) {
+				// 	console.log('서마트폰')
+				// 	this.sendMessage(e)
+				// 	// setTimeout(() => this.onChangeInput())
+				// } else {
+				// 	this.sendMessage(e)
+				// }
+			}
 
-        this.updateFooterList('@')
-        this.updateFooterList(':')
+			this.updateFooterList('@')
+			this.updateFooterList(':')
     },
 		onRoomChanged() {
 			this.loadingMessages = true
@@ -823,11 +799,17 @@ export default {
 		preventKeyboardFromClosing() {
 			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
 		},
-		sendMessage() {
-      console.log('send')
-			let message = this.message.trim()
-      console.log(message)
-
+		sendMessage(e) {
+			console.log(e)
+			let message
+      if(e instanceof KeyboardEvent){
+				message = this.$refs.roomTextarea.value.trim()
+				console.log('키보드')
+			}else if(e instanceof MouseEvent){
+				message = this.$refs.roomTextarea.value.trim()
+				console.log('마우스')
+			}
+	
 			if (!this.file && !message) return
 
 			this.selectedUsersTag.forEach(user => {
@@ -858,6 +840,7 @@ export default {
 			}
 
 			this.resetMessage(true)
+			this.isEmpty = true
 		},
 		loadMoreMessages(infiniteState) {
 			if (this.loadingMessages) {
@@ -928,7 +911,9 @@ export default {
 			}, 50)
 		},
 		onChangeInput() {
-      // console.log('here')
+      // console.log('onChangeInput')
+			this.emptyChecker = this.$refs['roomTextarea'].value
+
 			// this.keepKeyboardOpen = true
 			// this.resizeTextarea()
 			// this.$emit('typing-message', this.message)

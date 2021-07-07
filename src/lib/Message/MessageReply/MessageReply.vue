@@ -21,7 +21,7 @@
 		</div>
 
 		<!-- 오디오 -->
-		<audio-player
+		<!-- <audio-player
 			v-else-if="isAudio"
 			:src="message.replyMessage.file.url"
 			@update-progress-time="progressTime = $event"
@@ -30,7 +30,7 @@
 			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
-		</audio-player>
+		</audio-player> -->
 
 		<div class="vac-reply-content">
 			<format-message
@@ -51,7 +51,7 @@
 <script>
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
-import AudioPlayer from '../AudioPlayer/AudioPlayer'
+
 
 const {
 	isAudioFile,
@@ -61,7 +61,7 @@ const {
 
 export default {
 	name: 'MessageReply',
-	components: { AudioPlayer, FormatMessage },
+	components: { FormatMessage },
 
 	props: {
 		message: { type: Object, required: true },

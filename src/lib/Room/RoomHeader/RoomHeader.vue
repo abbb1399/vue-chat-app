@@ -1,8 +1,10 @@
 <template>
 	<div class="vac-room-header vac-app-border-b">
 		<slot name="room-header" v-bind="{ room, typingUsers, userStatus }">
+			
 			<div class="vac-room-wrapper">
-				<div
+				<!-- drawer 버튼 -->
+				<!-- <div
 					v-if="!singleRoom"
 					class="vac-svg-button vac-toggle-button"
 					:class="{ 'vac-rotate-icon': !showRoomsList && !isMobile }"
@@ -11,19 +13,20 @@
 					<slot name="toggle-icon">
 						<svg-icon name="toggle" />
 					</slot>
-				</div>
+				</div> -->
 				<div
 					class="vac-info-wrapper"
 					:class="{ 'vac-item-clickable': roomInfo }"
 					@click="$emit('room-info')"
 				>
-					<slot name="room-header-avatar" v-bind="{ room }">
+					<!-- 아바타 -->
+					<!-- <slot name="room-header-avatar" v-bind="{ room }">
 						<div
 							v-if="room.avatar"
 							class="vac-avatar"
 							:style="{ 'background-image': `url('${room.avatar}')` }"
 						/>
-					</slot>
+					</slot> -->
 					<slot
 						name="room-header-info"
 						v-bind="{ room, typingUsers, userStatus }"
@@ -41,6 +44,7 @@
 						</div>
 					</slot>
 				</div>
+
 				<slot v-if="room.roomId" name="room-options">
 					<div
 						v-if="menuActions.length"
@@ -68,6 +72,7 @@
 					</transition>
 				</slot>
 			</div>
+		
 		</slot>
 	</div>
 </template>

@@ -57,7 +57,7 @@
 					>	
 						<!-- 유저이름 -->
 						<div
-							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
+							v-if="message.senderId !== currentUserId"
 							class="vac-text-username"
 							:class="{
 								'vac-username-reply': !message.deleted && message.replyMessage
@@ -136,7 +136,7 @@
 						</div>
 
 						<!-- 오디오일때 -->
-						<audio-player
+						<!-- <audio-player
 							v-else-if="isAudio"
 							:src="message.file.url"
 							@update-progress-time="progressTime = $event"
@@ -145,7 +145,7 @@
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
-						</audio-player>
+						</audio-player> -->
 
 						<!-- 여긴데 -->
 						<div v-else class="vac-file-message">
@@ -189,35 +189,15 @@
 							</span>
 						</div>
 
-						<message-actions
-							:current-user-id="currentUserId"
-							:message="message"
-							:message-actions="messageActions"
-							:room-footer-ref="roomFooterRef"
-							:show-reaction-emojis="showReactionEmojis"
-							:hide-options="hideOptions"
-							:message-hover="messageHover"
-							:hover-message-id="hoverMessageId"
-							:hover-audio-progress="hoverAudioProgress"
-							@hide-options="$emit('hide-options', false)"
-							@update-message-hover="messageHover = $event"
-							@update-options-opened="optionsOpened = $event"
-							@update-emoji-opened="emojiOpened = $event"
-							@message-action-handler="messageActionHandler"
-							@send-message-reaction="sendMessageReaction($event)"
-						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
-								<slot :name="name" v-bind="data" />
-							</template>
-						</message-actions>
+					
 					</div>
 
-					<message-reactions
+					<!-- <message-reactions
 						:current-user-id="currentUserId"
 						:message="message"
 						:emojis-list="emojisList"
 						@send-message-reaction="sendMessageReaction($event)"
-					/>
+					/> -->
 				</div>
 			</slot>
 		</div>
@@ -230,9 +210,8 @@ import FormatMessage from '../../components/FormatMessage/FormatMessage'
 
 import MessageReply from './MessageReply/MessageReply'
 import MessageImage from './MessageImage/MessageImage'
-import MessageActions from './MessageActions/MessageActions'
-import MessageReactions from './MessageReactions/MessageReactions'
-import AudioPlayer from './AudioPlayer/AudioPlayer'
+
+
 
 const { messagesValidation } = require('../../utils/data-validation')
 const {
@@ -246,11 +225,8 @@ export default {
 	components: {
 		SvgIcon,
 		FormatMessage,
-		AudioPlayer,
 		MessageReply,
 		MessageImage,
-		MessageActions,
-		MessageReactions
 	},
 
 	props: {

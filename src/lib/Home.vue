@@ -41,7 +41,7 @@ export default {
 				}
 			],
 			messages: [],
-			messagesLoaded: false
+			messagesLoaded: false,
 		}
 	},
   methods: {
@@ -56,7 +56,7 @@ export default {
 					this.messages = [...this.addMessages(), ...this.messages]
 					this.messagesLoaded = true
 				}
-				this.addNewMessage()
+				// this.addNewMessage()
 			})
 		},
 
@@ -64,7 +64,7 @@ export default {
 			// console.log(reset)
 			const messages = []
 
-			for (let i = 0; i < 200; i++) {
+			for (let i = 0; i < 10; i++) {
 				messages.push({
 					_id: reset ? i : this.messages.length + i,
 					content: `${reset ? '' : 'paginated'} message ${i + 1}`,
@@ -92,20 +92,20 @@ export default {
 			]
 		},
 
-		addNewMessage() {
-			setTimeout(() => {
-				this.messages = [
-					...this.messages,
-					{
-						_id: this.messages.length,
-						content: 'NEW MESSAGE',
-						senderId: 4321,
-						timestamp: new Date().toString().substring(16, 21),
-						date: new Date().toDateString()
-					}
-				]
-			}, 2000)
-		},
+		// addNewMessage() {
+		// 	setTimeout(() => {
+		// 		this.messages = [
+		// 			...this.messages,
+		// 			{
+		// 				_id: this.messages.length,
+		// 				content: 'NEW MESSAGE',
+		// 				senderId: 4321,
+		// 				timestamp: new Date().toString().substring(16, 21),
+		// 				date: new Date().toDateString()
+		// 			}
+		// 		]
+		// 	}, 2000)
+		// },
 		deleteMsg (message) {
       console.log(message)
       const aa = document.querySelectorAll('.vac-message-card')

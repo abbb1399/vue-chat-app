@@ -1,32 +1,6 @@
 <template>
 	<div class="vac-card-window" :style="[{ height }, cssVars]">
 		<div class="vac-chat-container">
-			<rooms-list
-				v-if="!singleRoom"
-				:current-user-id="currentUserId"
-				:rooms="orderedRooms"
-				:loading-rooms="loadingRooms"
-				:rooms-loaded="roomsLoaded"
-				:room="room"
-				:room-actions="roomActions"
-				:text-messages="t"
-				:show-search="showSearch"
-				:show-add-room="showAddRoom"
-				:show-rooms-list="showRoomsList"
-				:text-formatting="textFormatting"
-				:link-options="linkOptions"
-				:is-mobile="isMobile"
-				@fetch-room="fetchRoom"
-				@fetch-more-rooms="fetchMoreRooms"
-				@loading-more-rooms="loadingMoreRooms = $event"
-				@add-room="addRoom"
-				@room-action-handler="roomActionHandler"
-			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
-					<slot :name="name" v-bind="data" />
-				</template>
-			</rooms-list>
-
 			<room
 				:current-user-id="currentUserId"
 				:rooms="rooms"
@@ -77,7 +51,7 @@
 </template>
 
 <script>
-import RoomsList from './RoomsList/RoomsList'
+// import RoomsList from './RoomsList/RoomsList'
 import Room from './Room/Room'
 
 import locales from '../locales'
@@ -90,7 +64,7 @@ const {
 export default {
 	name: 'ChatContainer',
 	components: {
-		RoomsList,
+		// RoomsList,
 		Room
 	},
 
